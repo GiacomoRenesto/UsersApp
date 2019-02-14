@@ -22,11 +22,11 @@ import java.util.ArrayList;
    // public usersAdapter(Context context, int resource, ArrayList<Result> results) {
    //    super(context, resource, results);
    // }
-public class usersAdapter extends RecyclerView.Adapter<usersAdapter.MyViewHolder>{
+public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder>{
 
     private ArrayList<Result> results;
 
-    public usersAdapter(ArrayList<Result> results){
+    public UsersAdapter(ArrayList<Result> results){
         this.results = results;
     }
 
@@ -43,7 +43,7 @@ public class usersAdapter extends RecyclerView.Adapter<usersAdapter.MyViewHolder
         }
     }
 
-    public usersAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
+    public UsersAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType){
         RelativeLayout v = (RelativeLayout) LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.item_user,parent,false);
         MyViewHolder viewHolder = new MyViewHolder(v);
@@ -57,7 +57,7 @@ public class usersAdapter extends RecyclerView.Adapter<usersAdapter.MyViewHolder
         holder.email.setText(result.getEmail());
         holder.phone.setText(result.getPhone());
 
-        Picasso.get().load(result.getPicture().getThumbnail()).resize(250,250).into(holder.imageView);
+        Picasso.get().load(result.getPicture().getThumbnail()).resize(270,270).into(holder.imageView);
     }
 
     public int getItemCount(){

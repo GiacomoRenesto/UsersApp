@@ -5,7 +5,9 @@ import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import com.example.usersapp.Model.Coordinates;
 
-public class Location {
+import io.realm.RealmObject;
+
+public class Location extends RealmObject {
 
     @SerializedName("street")
     @Expose

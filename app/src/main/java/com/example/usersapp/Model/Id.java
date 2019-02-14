@@ -4,7 +4,9 @@ package com.example.usersapp.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Id {
+import io.realm.RealmObject;
+
+public class Id extends RealmObject {
 
     @SerializedName("name")
     @Expose

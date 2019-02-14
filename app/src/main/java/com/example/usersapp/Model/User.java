@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.List;
 import com.example.usersapp.Model.Info;
 
+import io.realm.RealmObject;
+
 public class User {
 
     @SerializedName("results")

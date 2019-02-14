@@ -11,7 +11,9 @@ import com.example.usersapp.Model.Registered;
 import com.example.usersapp.Model.Id;
 import com.example.usersapp.Model.Picture;
 
-public class Result {
+import io.realm.RealmObject;
+
+public class Result extends RealmObject {
 
     @SerializedName("gender")
     @Expose

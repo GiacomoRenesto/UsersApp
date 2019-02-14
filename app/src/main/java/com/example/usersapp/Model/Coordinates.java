@@ -4,7 +4,9 @@ package com.example.usersapp.Model;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-public class Coordinates {
+import io.realm.RealmObject;
+
+public class Coordinates extends RealmObject {
 
     @SerializedName("latitude")
     @Expose
