@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         startupResults.addAll(realm.where(Result.class).findAll());
         Collections.reverse(startupResults);
         recyclerView.setAdapter(new UsersAdapter(startupResults));
-        deleteSingleBtn = (CircleButton)findViewById(R.id.deleteCircle);
+        /*deleteSingleBtn = (CircleButton)findViewById(R.id.deleteCircle);
         deleteSingleBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -62,7 +62,7 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
             }
-        });
+        }); */
         refreshLayout = findViewById(R.id.refreshLayout);
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
