@@ -28,7 +28,9 @@ import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
+import io.realm.RealmList;
 import io.realm.RealmResults;
 
 public class Connection extends AsyncTask<Void, Void, User> {
@@ -36,9 +38,10 @@ public class Connection extends AsyncTask<Void, Void, User> {
     private Context context;
     User jsonUser;
     private UsersAdapter adapter;
+    private RealmAdapter realmAdapter;
     private ListView listView;
     private RecyclerView recyclerView;
-    List<Result> dbResults;
+    OrderedRealmCollection <Result> dbResults;
 
     public Connection(SwipeRefreshLayout.OnRefreshListener onRefreshListener, RecyclerView recyclerView){}
 
@@ -94,22 +97,23 @@ public class Connection extends AsyncTask<Void, Void, User> {
     protected void onPostExecute(User result) {
         super.onPostExecute(result);
         //User userResult = jsonUser;
-        dbResults = new ArrayList<>();
+        //dbResults = new ArrayList<>();
+        dbResults = new RealmList<>();
         Realm realm = Realm.getDefaultInstance();
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
                 RealmResults<Result> queryResults = realm.where(Result.class).findAll();
-                dbResults.addAll(queryResults);
+                realmAdapter = new RealmAdapter(queryResults);
             }
         });
         //adapter = new usersAdapter(context,R.id.listViewUsers, userResult.getResults());
         //listView.setAdapter(adapter);
         //adapter.notifyDataSetChanged();
-        Collections.reverse(dbResults);
-        adapter = new UsersAdapter((ArrayList<Result>) dbResults);
-        recyclerView.setAdapter(adapter);
-        adapter.notifyDataSetChanged();
+        //Collections.reverse(dbResults);
+        //realmAdapter = new RealmAdapter(dbResults);
+        recyclerView.setAdapter(realmAdapter);
+        realmAdapter.notifyDataSetChanged();
     }
 
 }

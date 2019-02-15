@@ -17,6 +17,10 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 
+import at.markushi.ui.CircleButton;
+import io.realm.Realm;
+
+
 //public class usersAdapter extends ArrayAdapter<Result> {
 
    // public usersAdapter(Context context, int resource, ArrayList<Result> results) {
@@ -25,6 +29,9 @@ import java.util.ArrayList;
 public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder>{
 
     private ArrayList<Result> results;
+    Realm realm;
+
+
 
     public UsersAdapter(ArrayList<Result> results){
         this.results = results;
@@ -33,6 +40,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
     public class MyViewHolder extends RecyclerView.ViewHolder {
         public TextView firstName,lastName,email,phone;
         public ImageView imageView;
+        CircleButton deleteSingleBtn;
         public MyViewHolder(View view){
             super (view);
             firstName = (TextView) view.findViewById(R.id.tvName);
@@ -40,6 +48,7 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
             email = (TextView) view.findViewById(R.id.tvEmail);
             imageView = (ImageView) view.findViewById(R.id.ivUserIcon);
             phone = (TextView) view.findViewById(R.id.tvPhoneNumber);
+            deleteSingleBtn = (CircleButton)view.findViewById(R.id.deleteCircle);
         }
     }
 
@@ -52,6 +61,18 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
 
     public void onBindViewHolder(MyViewHolder holder, int position){
         Result result = results.get(position);
+
+        holder.deleteSingleBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                realm.executeTransaction(new Realm.Transaction() {
+                    @Override
+                    public void execute(Realm realm) {
+                      result.deleteFromRealm();
+                    }
+                });
+            }
+        });
         holder.firstName.setText(result.getName().getFirst());
         holder.lastName.setText(result.getName().getLast());
         holder.email.setText(result.getEmail());
@@ -63,6 +84,8 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
     public int getItemCount(){
         return results.size();
     }
+
+
 
     /*@Override
     public  View getView(int position, View convertView, ViewGroup parent) {
