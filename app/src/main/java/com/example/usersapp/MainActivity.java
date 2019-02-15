@@ -82,9 +82,10 @@ public class MainActivity extends AppCompatActivity {
                             }
                         });
                         dialog.dismiss();
-                        Intent intent = getIntent();
+                        /*Intent intent = getIntent();
                         finish();
-                        startActivity(intent);
+                        startActivity(intent);*/
+                        recreate();
 
                     }
                 });

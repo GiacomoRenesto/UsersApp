@@ -64,6 +64,11 @@ class RealmAdapter extends RealmRecyclerViewAdapter<Result, RealmAdapter.MyViewH
 
     }
 
+    @Override
+    public long getItemId(int position) {
+        return position;
+    }
+
 
         class MyViewHolder extends RecyclerView.ViewHolder {
             public Result result;

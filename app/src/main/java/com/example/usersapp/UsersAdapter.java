@@ -81,7 +81,12 @@ public class UsersAdapter extends RecyclerView.Adapter<UsersAdapter.MyViewHolder
         Picasso.get().load(result.getPicture().getThumbnail()).resize(270,270).into(holder.imageView);
     }
 
-    public int getItemCount(){
+       @Override
+       public long getItemId(int position) {
+           return position;
+       }
+
+       public int getItemCount(){
         return results.size();
     }
 
