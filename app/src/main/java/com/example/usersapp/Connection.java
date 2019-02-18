@@ -12,6 +12,7 @@ import android.widget.ListView;
 import com.example.usersapp.Model.Result;
 import com.example.usersapp.Model.User;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
 
 import java.io.BufferedReader;
@@ -32,6 +33,7 @@ import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmList;
 import io.realm.RealmResults;
+import io.realm.Sort;
 
 public class Connection extends AsyncTask<Void, Void, User> {
 
@@ -68,7 +70,7 @@ public class Connection extends AsyncTask<Void, Void, User> {
                 InputStream inputStream = httpsURLConnection.getInputStream();
                 BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
 
-                Gson gson = new Gson();
+                Gson gson = new GsonBuilder().excludeFieldsWithoutExposeAnnotation().create();
 
                 Type resultsType = new TypeToken<User>() {
                 }.getType();
@@ -81,7 +83,18 @@ public class Connection extends AsyncTask<Void, Void, User> {
                 realm.executeTransaction(new Realm.Transaction() {
                     @Override
                     public void execute(Realm realm) {
-                        realm.insert(jsonUser.getResults());
+                        for (Result result : jsonUser.getResults()) {
+                            Number currentIdNum = realm.where(Result.class).max("dbId");
+                            int nextId;
+                            if(currentIdNum == null) {
+                                nextId = 1;
+                            } else {
+                                nextId = currentIdNum.intValue() + 1;
+                            }
+                            result.setDbId(nextId);
+                            realm.insertOrUpdate(result);
+                        }
+                        //realm.insert(jsonUser.getResults());
                     }
                 });
             }
@@ -103,7 +116,7 @@ public class Connection extends AsyncTask<Void, Void, User> {
         realm.executeTransaction(new Realm.Transaction() {
             @Override
             public void execute(Realm realm) {
-                RealmResults<Result> queryResults = realm.where(Result.class).findAll();
+                RealmResults<Result> queryResults = realm.where(Result.class).findAll().sort("dbId", Sort.DESCENDING);
                 realmAdapter = new RealmAdapter(queryResults);
             }
         });

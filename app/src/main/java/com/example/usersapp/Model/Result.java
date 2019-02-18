@@ -52,6 +52,8 @@ public class Result extends RealmObject {
     @Expose
     private String nat;
 
+    private int dbId;
+
     /**
      * No args constructor for use in serialization
      * 
@@ -187,4 +189,11 @@ public class Result extends RealmObject {
         this.nat = nat;
     }
 
+    public int getDbId() {
+        return dbId;
+    }
+
+    public void setDbId(int dbId) {
+        this.dbId = dbId;
+    }
 }

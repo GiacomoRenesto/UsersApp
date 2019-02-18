@@ -1,8 +1,12 @@
 package com.example.usersapp;
 
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -118,8 +122,21 @@ public class MainActivity extends AppCompatActivity {
         refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-                Connection connection = new Connection(getBaseContext(), recyclerView);
-                connection.execute();
+                ConnectivityManager cm =
+                        (ConnectivityManager)getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+
+                NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+                boolean isConnected = activeNetwork != null &&
+                        activeNetwork.isConnectedOrConnecting();
+                if(isConnected==false){
+                    Snackbar mySnackbar = Snackbar.make(findViewById(android.R.id.content),
+                            "You are offline, check your connection", Snackbar.LENGTH_LONG);
+                    mySnackbar.show();
+                }else {
+                    Connection connection = new Connection(getBaseContext(), recyclerView);
+                    connection.execute();
+
+                }
                 refreshLayout.setRefreshing(false);
             }
 
