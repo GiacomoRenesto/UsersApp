@@ -1,18 +1,14 @@
 package com.example.usersapp;
 
-import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.example.usersapp.Model.Picture;
 import com.example.usersapp.Model.Result;
-import com.example.usersapp.Model.User;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;

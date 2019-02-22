@@ -2,49 +2,43 @@ package com.example.usersapp;
 
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
-import android.widget.ListView;
 
 import com.example.usersapp.Model.Result;
-import com.example.usersapp.Model.User;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.example.usersapp.Presenter.Connection;
+import com.example.usersapp.Presenter.Presenter;
 
 import at.markushi.ui.CircleButton;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
-import io.realm.RealmConfiguration;
 import io.realm.RealmList;
 import io.realm.RealmResults;
 
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements Contract.IView {
 
     //ListView listView;
     private RecyclerView recyclerView;
     private RecyclerView.LayoutManager layoutManager;
     SwipeRefreshLayout refreshLayout;
     CircleButton deleteSingleBtn;
-    //ArrayList<Result> startupResults = new ArrayList<>();
     OrderedRealmCollection<Result> startupResults;
     FloatingActionButton fab;
+    Presenter presenter;
+    SwipeRefreshLayout setRefreshing;
+    //ArrayList<Result> startupResults = new ArrayList<>();
     //private RecyclerView.Adapter adapter;
     //private List<Result> results;
-
 
 
     @Override
@@ -57,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         //listView = findViewById(R.id.listViewUsers);
         recyclerView = (RecyclerView) findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
-        layoutManager = new  LinearLayoutManager(this);
+        layoutManager = new LinearLayoutManager(this);
         ((LinearLayoutManager) layoutManager).setOrientation(LinearLayoutManager.VERTICAL);
         //recyclerView.addItemDecoration(new DividerItemDecoration(this, LinearLayoutManager.VERTICAL));
         recyclerView.setLayoutManager(layoutManager);
@@ -65,7 +59,16 @@ public class MainActivity extends AppCompatActivity {
         startupResults = realm.where(Result.class).findAll();
         recyclerView.setAdapter(new RealmAdapter(startupResults));
         final RealmResults<Result> resultsToBeDeleted = realm.where(Result.class).findAll();
-        fab = (FloatingActionButton) findViewById(R.id.fab);
+        deleteSingleBtn = (CircleButton)findViewById(R.id.deleteCircle);
+        fab = findViewById(R.id.fab);
+        setRefreshing = findViewById(R.id.refreshLayout);
+        fabClick(getApplicationContext());
+        refreshLayout(getApplicationContext());
+    }
+
+
+    @Override
+    public void fabClick(Context context) {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,18 +81,14 @@ public class MainActivity extends AppCompatActivity {
 
                     public void onClick(DialogInterface dialog, int which) {
 
-                        realm.executeTransaction(new Realm.Transaction() {
-                            @Override
-                            public void execute(Realm realm) {
-                                realm.deleteAll();
-                                //resultsToBeDeleted.deleteAllFromRealm();
-                            }
-                        });
+                        presenter = new Presenter();
+                        presenter.deleteAllRealm();
+
                         dialog.dismiss();
                         /*Intent intent = getIntent();
                         finish();
-                        startActivity(intent);*/
-                        recreate();
+                        startActivity(intent);
+                        recreate();*/
 
                     }
                 });
@@ -106,41 +105,34 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
-        /*deleteSingleBtn = (CircleButton)findViewById(R.id.deleteCircle);
-        deleteSingleBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                realm.executeTransaction(new Realm.Transaction() {
-                    @Override
-                    public void execute(Realm realm) {
 
-                    }
-                });
-            }
-        }); */
-        refreshLayout = findViewById(R.id.refreshLayout);
-        refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+    }
+
+    @Override
+    public void refreshLayout(Context context) {
+        setRefreshing.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            //private RecyclerView recyclerView;
+
             @Override
             public void onRefresh() {
                 ConnectivityManager cm =
-                        (ConnectivityManager)getBaseContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+                        (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
 
                 NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
                 boolean isConnected = activeNetwork != null &&
                         activeNetwork.isConnectedOrConnecting();
-                if(isConnected==false){
-                    Snackbar mySnackbar = Snackbar.make(findViewById(android.R.id.content),
+                if (!isConnected) {
+                    Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView(),
                             "You are offline, check your connection", Snackbar.LENGTH_LONG);
                     mySnackbar.show();
-                }else {
-                    Connection connection = new Connection(getBaseContext(), recyclerView);
+                } else {
+                    Connection connection = new Connection(context, recyclerView);
                     connection.execute();
 
                 }
-                refreshLayout.setRefreshing(false);
+                setRefreshing.setRefreshing(false);
             }
 
         });
-
     }
 }

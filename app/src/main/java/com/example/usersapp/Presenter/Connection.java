@@ -1,16 +1,16 @@
-package com.example.usersapp;
+package com.example.usersapp.Presenter;
 
 import android.content.Context;
-import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.RecyclerView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
 import com.example.usersapp.Model.Result;
 import com.example.usersapp.Model.User;
+import com.example.usersapp.R;
+import com.example.usersapp.RealmAdapter;
+import com.example.usersapp.UsersAdapter;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.reflect.TypeToken;
@@ -22,10 +22,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Type;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -40,17 +36,13 @@ public class Connection extends AsyncTask<Void, Void, User> {
     private Context context;
     User jsonUser;
     private UsersAdapter adapter;
-    private RealmAdapter realmAdapter;
+    public RealmAdapter realmAdapter;
     private ListView listView;
     private RecyclerView recyclerView;
     OrderedRealmCollection <Result> dbResults;
 
     public Connection(SwipeRefreshLayout.OnRefreshListener onRefreshListener, RecyclerView recyclerView){}
 
-    //public Connection (Context context, ListView listView) {
-        //this.context = context;
-        //this.listView = listView;
-    //}
 
     public Connection (Context context,RecyclerView recyclerView) {
         this.context = context;
@@ -86,6 +78,7 @@ public class Connection extends AsyncTask<Void, Void, User> {
                         for (Result result : jsonUser.getResults()) {
                             Number currentIdNum = realm.where(Result.class).max("dbId");
                             int nextId;
+
                             if(currentIdNum == null) {
                                 nextId = 1;
                             } else {

@@ -1,6 +1,5 @@
 package com.example.usersapp;
 
-import android.content.ClipData;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,22 +10,17 @@ import android.widget.TextView;
 import com.example.usersapp.Model.Result;
 import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
-
 import at.markushi.ui.CircleButton;
 import io.realm.OrderedRealmCollection;
 import io.realm.Realm;
 import io.realm.RealmRecyclerViewAdapter;
-import io.realm.RealmResults;
 
-class RealmAdapter extends RealmRecyclerViewAdapter<Result, RealmAdapter.MyViewHolder> {
+public class RealmAdapter extends RealmRecyclerViewAdapter<Result, RealmAdapter.MyViewHolder> {
 
     private OrderedRealmCollection<Result> results;
     Realm realm;
 
-    RealmAdapter(OrderedRealmCollection<Result> results) {
+    public RealmAdapter(OrderedRealmCollection<Result> results) {
         super(results, true);
         this.results = results;
         setHasStableIds(true);
@@ -50,6 +44,7 @@ class RealmAdapter extends RealmRecyclerViewAdapter<Result, RealmAdapter.MyViewH
                     @Override
                     public void execute(Realm realm) {
                         result.deleteFromRealm();
+                        RealmAdapter.this.notifyDataSetChanged();
                     }
                 });
             }
