@@ -13,6 +13,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.RelativeLayout;
 
 import com.example.usersapp.Model.Result;
 import com.example.usersapp.Presenter.Connection;
@@ -39,12 +40,14 @@ public class MainActivity extends AppCompatActivity implements Contract.IView {
     //ArrayList<Result> startupResults = new ArrayList<>();
     //private RecyclerView.Adapter adapter;
     //private List<Result> results;
+    RelativeLayout relativeLayout;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        relativeLayout = findViewById(R.id.relative);
         Realm.init(this);
         Realm realm = Realm.getDefaultInstance();
         //RealmConfiguration realmConfiguration = new RealmConfiguration();
@@ -59,7 +62,7 @@ public class MainActivity extends AppCompatActivity implements Contract.IView {
         startupResults = realm.where(Result.class).findAll();
         recyclerView.setAdapter(new RealmAdapter(startupResults));
         final RealmResults<Result> resultsToBeDeleted = realm.where(Result.class).findAll();
-        deleteSingleBtn = (CircleButton)findViewById(R.id.deleteCircle);
+        deleteSingleBtn = (CircleButton) findViewById(R.id.deleteCircle);
         fab = findViewById(R.id.fab);
         setRefreshing = findViewById(R.id.refreshLayout);
         fabClick(getApplicationContext());
@@ -122,7 +125,7 @@ public class MainActivity extends AppCompatActivity implements Contract.IView {
                 boolean isConnected = activeNetwork != null &&
                         activeNetwork.isConnectedOrConnecting();
                 if (!isConnected) {
-                    Snackbar mySnackbar = Snackbar.make(getWindow().getDecorView(),
+                    Snackbar mySnackbar = Snackbar.make(relativeLayout,
                             "You are offline, check your connection", Snackbar.LENGTH_LONG);
                     mySnackbar.show();
                 } else {
